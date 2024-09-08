@@ -100,6 +100,31 @@ sc_info = {
     Impaction = {'Lightning', Liquefaction={1,'Liquefaction'}, Detonation={1,'Detonation'}, lvl=1},
 }
 
+sc_jp = {
+    Radiance = '極光',
+    Umbra = '黒闇',
+    Light = '光',
+    Darkness = '闇',
+    Gravitation = '重力',
+    Fragmentation = '分解',
+    Distortion = '湾曲',
+    Fusion = '核熱',
+    Compression = '収縮',
+    Liquefaction = '溶解',
+    Induration = '硬化',
+    Reverberation = '振動',
+    Transfixion = '貫通',
+    Scission = '切断',
+    Detonation = '炸裂',
+    Impaction = '衝撃',
+    Fire = '火',
+    Earth = '土',
+    Lightning = '雷',
+    Wind = '風',
+    Ice = '氷',
+    Water = '水',
+}
+
 chainbound = {}
 chainbound[1] = L{'Compression','Liquefaction','Induration','Reverberation','Scission'}
 chainbound[2] = L{'Gravitation','Fragmentation','Distortion'} + chainbound[1]
@@ -208,8 +233,8 @@ function add_skills(t, abilities, active, resource, AM)
             if prop then
                 prop = AM and aeonic or prop
                 tt[lv][#tt[lv]+1] = settings.color and
-                    '%-16s → Lv.%d %s%-14s\\cr':format(res[resource][ability_id].name, lv, colors[prop], prop) or
-                    '%-16s → Lv.%d %-14s':format(res[resource][ability_id].name, lv, prop)
+                    '%-16s → Lv.%d %s%-14s\\cr':format(res[resource][ability_id].name, lv, colors[prop], sc_jp[prop]) or
+                    '%-16s → Lv.%d %-14s':format(res[resource][ability_id].name, lv, sc_jp[prop])
             end
         end
     end
@@ -236,15 +261,27 @@ function check_results(reson)
     return _raw.table.concat(t, '\n')
 end
 
+function sc_trans(tb)
+    local temp = {}
+    for k=1,#tb do
+        if sc_jp[tb[k]] then
+            temp[k] = sc_jp[tb[k]]
+        else
+            temp[k] = tb[k]
+        end
+    end
+    return temp
+end
+
 function colorize(t)
     local temp
     if settings.color then
         temp = {}
         for k=1,#t do
-            temp[k] = '%s%s\\cr':format(colors[t[k]], t[k])
+            temp[k] = '%s%s\\cr':format(colors[t[k]], sc_jp[t[k]])
         end
     end
-    return _raw.table.concat(temp or t, ',')
+    return _raw.table.concat(temp or sc_trans(t), ',')
 end
 
 local next_frame = os.clock()
